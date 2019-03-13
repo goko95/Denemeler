@@ -1,0 +1,370 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace FRP
+{
+    class Program
+    {
+        public static void Main(string[] args)
+        {
+            int val;
+
+            while (true)
+            {
+                Console.WriteLine("For Cyberpunk: 1" + "\n" + "For Dices: 9");
+                val = Convert.ToInt32(Console.ReadLine());
+
+                if (val == 1)
+                    Cyberpunk.main();
+                else
+                    if (val == 9)
+                    Zarlar.main();
+                else
+                    if (val == 0)
+                    return;
+                else
+                    Console.WriteLine("Invalid entry!");
+            }
+        }
+    }
+}
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace FRP
+{
+    class Cyberpunk
+    {
+        public static int characterNumber;
+
+
+        public static string[] characterName = new string[characterNumber];
+        public static string[] characterRole = new string[characterNumber];
+
+
+        public static string characterPoint;
+
+
+        public static string[] statName = { "INT", "REF", "TECH", "COOL", "ATTR", "LUCK", "MA", "BODY", "EMP" };
+        public static int[,] statsValue = new int[characterNumber, 9];
+
+
+        public static string[] location = { "Head: 1", "Torso: 2-4", "R. Arm: 5", "L. Arm: 6", "R. Leg: 7-8", "L. Leg: 9-0" }; 
+        public static int[] armorSp = new int[6];
+
+        public static bool[,] save = new bool[characterNumber, 1];
+        public static bool[,] bTM = new bool[characterNumber, 1];
+
+        public static bool[,] light = new bool[characterNumber, 4];
+        public static bool[,] serious = new bool[characterNumber, 4];
+        public static bool[,] critical = new bool[characterNumber, 4];
+        public static bool[,] mortal0 = new bool[characterNumber, 4];
+        public static bool[,] mortal1 = new bool[characterNumber, 4];
+        public static bool[,] mortal2 = new bool[characterNumber, 4];
+        public static bool[,] mortal3 = new bool[characterNumber, 4];
+        public static bool[,] mortal4 = new bool[characterNumber, 4];
+        public static bool[,] mortal5 = new bool[characterNumber, 4];
+        public static bool[,] mortal6 = new bool[characterNumber, 4];
+
+
+        public static string[] skillNames = {"SKILLS","SPECIAL ABILITIES", "Authority", "Charismatic Leadership", "Combat Sense", "Credibility", "Family", "Interface",
+                                             "Jury Rig", "Medical Tech", "Resources", "Streetdeal","ATTR","Personal Grooming","Wardrobe & Style","BODY","Endurance",
+                                             "Strength Feat","Swimming","COOL/WILL","Interrogation","Intimidate","Oratory","Resist Torture/Drugs","Streetwise",
+                                             "EMPATHY","Human Perception","Interview","Leadership","Seduction","Social","Persuasion &fast Talk","Perform","INT", "Accounting",
+                                             "Anthropology","Awereness/Notice","Biology","Botany","Chemisty","Composition","Diagnose Illness","Education & Gen.Know",
+                                             "Expert","Gamble","Geology","Hide/Evade","History","Language","Language","Language","Library Search","Mathematics",
+                                             "Physics","Programming","Shadow/Track","Stock Market","System Knowledge","Teaching","Wilderness Survival","Zoology","REF",
+                                             "Archery","Athletics","Brawling","Dance","Dodge & Escape","Driving","Fencing", "Handgun","Heavy Weapons","Martial Art 1",
+                                             "Martial Art 2", "Martial Art 3","Melee","Motorcycle","Operate Hvy. Machinery", "Pilot (Gyro)","Pilot (Fixed Wing)",
+                                             "Pilot (Dirigible)","Pilot (Vect. Thrust Vehicle)", "Rifle","Stealth","Submachinegun","TECH","Aero Tech","AV Tech",
+                                             "Cryotank Operation", "Cyberdeck Design", "Cyber Tech", "Demolitions", "Disguise","Electronics","First Aid","Forgery",
+                                             "Gyro Tech","Paint/Draw","Photo & Film","Pharmacuticals","Pick Lock","Play Instrument","Weaponsmith","Other","Other",
+                                             "Other","Other","Other","Other" };
+        public static int[,] skillValues = new int[characterNumber, 77];
+
+        public static string[,] language = new string[characterNumber, 3];
+        public static string[,] martialArt = new string[characterNumber, 3];
+        public static string[,] other = new string[characterNumber, 6];
+
+        public static int[,] rep = new int[characterNumber,1];
+        public static int[,] currentIP= new int[characterNumber, 1];
+        public static int[,] humanity= new int[characterNumber, 1];
+
+
+        //Cybernetics
+        public static string[] cyberneticNames = { "TYPE", "HL", "COST" };
+        public static string[,] type = new string[characterNumber,19]; // indis 18 = Total HL and Euro Costs
+        public static int[,] /*string*/ hL = new int[characterNumber,19];
+        public static int[,] cost = new int[characterNumber,19];
+
+
+        //Lifepath
+        public static string[] styleNames = { "STYLE", "Clothes", "Affectations", "Ethnicity", "Language" };
+        public static string[,] styleValue = new string[characterNumber, 6];
+
+        public static string[,] familyBackground = new string[characterNumber, 1];
+
+        public static string[] siblingsName = { "Male", "Female" };
+        public static int[,] siblingsValue = new int[characterNumber, 2];
+
+        public static string[] motivationNames = { "MOTIVATIONS", "Traits", "Valued Person", "Value Most", "Feel About People", "Valued Posession" };
+        public static string[,] motivationValues = new string[characterNumber, 6];
+
+        public static string[] lifeEventNames = { "Life Events", "Year" }; //One event for each year after age 16
+        public static string[,] lifeEventValues = new string[characterNumber, 28];
+
+        //Gear
+        public static string[] gearNames = { "TYPE", "COST", "WT" };
+        public static string[,] gearValues = new string[characterNumber, 35];
+        public static int[,] costGear = new int[characterNumber, 35];
+        public static int[,] wT = new int[characterNumber, 35];
+
+        //Weapons
+        public static string[] weaponNames = { "Name", "Type", "WA", "Conc.", "Avail.", "Dam.", "#Shots", "ROF", "Rel" };
+        public static string[,] weaoponValue = new string[characterNumber, 19];
+        public static string[,] weaponType = new string[characterNumber, 19];
+        public static int[,] weaponWA = new int[characterNumber, 19];
+        public static int[,] conc = new int[characterNumber, 19];
+        public static int[,] avail = new int[characterNumber, 19];
+        public static int[,] dam = new int[characterNumber, 19];
+        public static int[,] numShots = new int[characterNumber, 19];
+        public static int[,] rOF = new int[characterNumber, 19];
+        public static int[,] rel = new int[characterNumber, 19];
+
+
+        public static void main()
+        {
+            int num;
+
+            while (true)
+            {
+                Console.WriteLine("For Random: 1\nFor Fast: 2\nFor Cinematic: 3\nFor Main Menu: 0");
+                num = Convert.ToInt32(Console.ReadLine());
+
+                if (num == 1)
+                    buildCharacterRandom();
+                else
+                    if (num == 2)
+                        buildCharacterFast();
+                    else
+                        if (num == 3)
+                            buildCharacterCinematic();
+                        else
+                            if (num == 0)
+                                return;
+                characterSheet();
+            }
+        }
+
+        public static void characterSheet()
+        {
+            int val;
+
+            while (true)
+            {
+                Console.WriteLine("For Displaying: 1 \nFor Initialization: 2 \nFor Modifiying: 3 \nFor Exit: 0");
+                val = Convert.ToInt32(Console.ReadKey());
+
+                if (val == 1) //Display
+                {
+
+                }
+                else if (val == 2) //Initialization
+                {
+
+                }
+                else if (val == 3) //Modification
+                {
+
+                }
+                else if (val == 0) //Exit
+                    return;
+                else
+                    Console.WriteLine("Invalid Entry! Try Again.");
+            }
+        }
+
+            public static void buildCharacterRandom()
+        {
+            Console.WriteLine("On Random Mode you roll 9D10 and total of them is your Character Points.\nReroll any scores of 2 or less.\nUnderstood?");
+            Console.ReadKey();
+            
+            Console.WriteLine("How many characters?");
+            characterNumber = Convert.ToInt32(Console.ReadLine());
+
+            for (int i = 0; i < characterNumber; i++)
+            {
+                Console.WriteLine("Enter full name:");
+                characterName[i] = Console.ReadLine();
+
+                Console.WriteLine("Enter Role:");
+                characterRole [i] = Console.ReadLine();
+
+                Zarlar.main();
+
+                for (int k = 0; k < 9; k++)
+                {
+                    Console.WriteLine("Enter a " + statName[k] + " value:");
+                    statsValue[i,k] = Convert.ToInt32(Console.ReadLine());
+                }
+            }
+            
+            Console.ReadKey();
+        }
+
+        public static void buildCharacterFast()
+        {
+            Console.WriteLine("On Fast Mode you roll 1D10 for each stat.\nReroll any scores of 2 or less and enter the score to the stat.\nUnderstood?");
+            Console.ReadKey();
+
+            Console.WriteLine("How many characters?");
+            characterNumber = Convert.ToInt32(Console.ReadLine());
+            
+            for (int i = 0; i < characterNumber; i++)
+            {
+                Console.WriteLine("Enter full name:");
+                characterName[i] = Console.ReadLine();
+
+                Console.WriteLine("Enter Role:");
+                characterRole[i] = Console.ReadLine();
+
+                for (int k = 0; k < 9; k++)
+                {
+                    Zarlar.main();
+
+                    Console.WriteLine("Enter a " + statName[k] + " value:");
+                    statsValue[i, k] = Convert.ToInt32(Console.ReadLine());
+                }
+            }
+
+            Console.ReadKey();
+        }
+
+        public static void buildCharacterCinematic()
+        {
+            Console.WriteLine("On Fast Mode you roll 1D10 for each stat.\nReroll any scores of 2 or less and enter the score to the stat.\nUnderstood?");
+            Console.ReadKey();
+
+            Console.WriteLine("Major Hero___________________80pts" +
+                "            /nMajor Supporting Char._______70pts" +
+                "            /nMinor Hero___________________75pts" +
+                "            /nMinor Supporting Char._______60pts" +
+                "            /nAverage______________________50pts");
+
+            Console.WriteLine("How many characters?");
+            characterNumber = Convert.ToInt32(Console.ReadLine());
+
+            for (int i = 0; i < characterNumber; i++)
+            {
+                Console.WriteLine("Enter full name:");
+                characterName[i] = Console.ReadLine();
+
+                Console.WriteLine("Enter Role:");
+                characterRole[i] = Console.ReadLine();
+                
+                for (int k = 0; k < 9; k++)
+                {
+                    Console.WriteLine("Enter a " + statName[k] + " value:");
+                    statsValue[i, k] = Convert.ToInt32(Console.ReadLine());
+                }
+            }
+
+            Console.ReadKey();
+        }
+        
+        public static void skills()
+        {
+            //I have to read the Core Rule Book
+        }
+
+        public static int damage()
+        {
+            //I have to read the Core Rule Book
+            return 1;
+        }
+
+
+    }
+}
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace FRP
+{
+    class Zarlar
+    {
+        public static void main()
+        {
+            int a;
+            while (true)
+            {
+                Console.WriteLine("For 6-sided dice: 1\nFor 10-sided dice: 2\nFor Exit: 0");
+                a = Convert.ToInt32(Console.ReadLine());
+
+                if (a == 1)
+                {
+                    Console.WriteLine("You picked 6-sided dice!");
+                    zar6();
+                }
+                else if (a == 2)
+                {
+                    Console.WriteLine("You picked 10-sided dice!");
+                    zar10();
+                }
+                else if (a == 0)
+                    return;
+                else
+                    Console.WriteLine("Invalid entry!");
+            }
+        }
+
+        public static void zar6()
+        {
+            Random rb = new Random();
+            Console.WriteLine("How many times?");
+            int times = Convert.ToInt32(Console.ReadLine());
+
+            int x = 0;
+            int sum = 0;
+
+            for (int i = 1; i <= times; i++)
+            {
+                x = rb.Next(1, 6);
+                Console.WriteLine(x);
+                sum = sum + x;
+            }
+
+            Console.WriteLine("\n" + sum);
+        }
+
+        public static void zar10()
+        {
+            Random rb = new Random();
+            Console.WriteLine("How many times?");
+            int times = Convert.ToInt32(Console.ReadLine());
+
+            int x = 0;
+            int sum = 0;
+
+            for (int i = 1; i <= times; i++)
+            {
+                x = rb.Next(1, 10);
+                Console.WriteLine(x);
+                sum = sum + x;
+            }
+
+            Console.WriteLine("\n" + sum);
+        }
+    }
+}
